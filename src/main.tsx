@@ -5,6 +5,15 @@ import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { hydrateFromSupabase, installLocalStorageSync } from './lib/supabase.ts';
 import './index.css';
 
+// Automatically handle Vite dynamic chunk load errors on mobile data
+if (typeof window !== 'undefined') {
+  window.addEventListener('vite:preloadError', (event) => {
+    console.warn('[Vite Preload] Reloading due to chunk version mismatch or network drop');
+    event.preventDefault();
+    window.location.reload();
+  });
+}
+
 // Safely install local storage sync without blocking render
 try {
   installLocalStorageSync();

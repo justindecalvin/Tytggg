@@ -15,29 +15,41 @@ import { HouseChampionshipLeaderboard } from './components/HouseChampionshipLead
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
-import { AdmissionsModal } from './components/AdmissionsModal';
-import { TuitionCalculatorModal } from './components/TuitionCalculatorModal';
-import { ApplicationTrackerModal } from './components/ApplicationTrackerModal';
-import { CareerAdvisorModal } from './components/CareerAdvisorModal';
 import { FAQSection } from './components/FAQSection';
-import { UserTourModal } from './components/UserTourModal';
 import { CampusGallery } from './components/CampusGallery';
 import { SchoolNewsBlogSection } from './components/SchoolNewsBlogSection';
 import { ContributorsSection } from './components/ContributorsSection';
 import { Compass, X } from 'lucide-react';
 import { FloatingChatWidget } from './components/chat/FloatingChatWidget';
-
-// Dedicated Subpages & Portals
-import { ProprietressPage } from './components/ProprietressPage';
-import { PortalLoginPage } from './components/PortalLoginPage';
-import { AdminPortal } from './components/portals/AdminPortal';
-import { ProprietressPortal } from './components/portals/ProprietressPortal';
-import { HeadmistressPortal } from './components/portals/HeadmistressPortal';
-import { ModeratorPortal } from './components/portals/ModeratorPortal';
-import { TutorPortal } from './components/portals/TutorPortal';
-import { StudentPortal } from './components/portals/StudentPortal';
-import { ParentPortal } from './components/portals/ParentPortal';
 import { PageSection } from './types';
+
+// Lazy-loaded Modals
+const AdmissionsModal = React.lazy(() => import('./components/AdmissionsModal').then(m => ({ default: m.AdmissionsModal })));
+const TuitionCalculatorModal = React.lazy(() => import('./components/TuitionCalculatorModal').then(m => ({ default: m.TuitionCalculatorModal })));
+const ApplicationTrackerModal = React.lazy(() => import('./components/ApplicationTrackerModal').then(m => ({ default: m.ApplicationTrackerModal })));
+const CareerAdvisorModal = React.lazy(() => import('./components/CareerAdvisorModal').then(m => ({ default: m.CareerAdvisorModal })));
+const UserTourModal = React.lazy(() => import('./components/UserTourModal').then(m => ({ default: m.UserTourModal })));
+
+// Lazy-loaded Subpages & Portals
+const ProprietressPage = React.lazy(() => import('./components/ProprietressPage').then(m => ({ default: m.ProprietressPage })));
+const PortalLoginPage = React.lazy(() => import('./components/PortalLoginPage').then(m => ({ default: m.PortalLoginPage })));
+const AdminPortal = React.lazy(() => import('./components/portals/AdminPortal').then(m => ({ default: m.AdminPortal })));
+const ProprietressPortal = React.lazy(() => import('./components/portals/ProprietressPortal').then(m => ({ default: m.ProprietressPortal })));
+const HeadmistressPortal = React.lazy(() => import('./components/portals/HeadmistressPortal').then(m => ({ default: m.HeadmistressPortal })));
+const ModeratorPortal = React.lazy(() => import('./components/portals/ModeratorPortal').then(m => ({ default: m.ModeratorPortal })));
+const TutorPortal = React.lazy(() => import('./components/portals/TutorPortal').then(m => ({ default: m.TutorPortal })));
+const StudentPortal = React.lazy(() => import('./components/portals/StudentPortal').then(m => ({ default: m.StudentPortal })));
+const ParentPortal = React.lazy(() => import('./components/portals/ParentPortal').then(m => ({ default: m.ParentPortal })));
+
+const PortalLoadingSkeleton: React.FC = () => (
+  <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-6 text-center font-['Nunito',sans-serif]">
+    <div className="w-14 h-14 rounded-2xl bg-blue-900 border-2 border-amber-400 flex items-center justify-center text-amber-300 font-black text-base mb-4 shadow-lg animate-pulse">
+      SBS
+    </div>
+    <div className="text-base font-black text-slate-900 mb-1">Loading Academic Portal...</div>
+    <div className="text-xs text-slate-500 max-w-xs">Connecting securely to Stanbax academic records.</div>
+  </div>
+);
 
 const MainAppContent: React.FC = () => {
   const { 
@@ -97,7 +109,9 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'admin-portal') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <AdminPortal onBackToWebsite={() => handleNavigate('home')} />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <AdminPortal onBackToWebsite={() => handleNavigate('home')} />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -106,7 +120,9 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'proprietress-portal') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <ProprietressPortal onBackToWebsite={() => handleNavigate('home')} />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <ProprietressPortal onBackToWebsite={() => handleNavigate('home')} />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -115,7 +131,9 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'headmistress-portal') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <HeadmistressPortal onBackToWebsite={() => handleNavigate('home')} />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <HeadmistressPortal onBackToWebsite={() => handleNavigate('home')} />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -124,7 +142,9 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'moderator-portal') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <ModeratorPortal onBackToWebsite={() => handleNavigate('home')} />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <ModeratorPortal onBackToWebsite={() => handleNavigate('home')} />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -133,7 +153,9 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'tutor-portal') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <TutorPortal onBackToWebsite={() => handleNavigate('home')} />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <TutorPortal onBackToWebsite={() => handleNavigate('home')} />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -142,7 +164,9 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'student-portal') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <StudentPortal onBackToWebsite={() => handleNavigate('home')} />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <StudentPortal onBackToWebsite={() => handleNavigate('home')} />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -151,7 +175,9 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'parent-portal') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <ParentPortal onBackToWebsite={() => handleNavigate('home')} />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <ParentPortal onBackToWebsite={() => handleNavigate('home')} />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -160,18 +186,20 @@ const MainAppContent: React.FC = () => {
   if (activeSection === 'portal-login') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 font-['Nunito',sans-serif]">
-        <PortalLoginPage 
-          onBackToWebsite={() => handleNavigate('home')}
-          onLoginSuccess={(role) => {
-            if (role === 'admin') setActiveSection('admin-portal');
-            else if (role === 'proprietress') setActiveSection('proprietress-portal');
-            else if (role === 'headmistress') setActiveSection('headmistress-portal');
-            else if (role === 'moderator') setActiveSection('moderator-portal');
-            else if (role === 'tutor') setActiveSection('tutor-portal');
-            else if (role === 'student') setActiveSection('student-portal');
-            else if (role === 'parent') setActiveSection('parent-portal');
-          }}
-        />
+        <React.Suspense fallback={<PortalLoadingSkeleton />}>
+          <PortalLoginPage 
+            onBackToWebsite={() => handleNavigate('home')}
+            onLoginSuccess={(role) => {
+              if (role === 'admin') setActiveSection('admin-portal');
+              else if (role === 'proprietress') setActiveSection('proprietress-portal');
+              else if (role === 'headmistress') setActiveSection('headmistress-portal');
+              else if (role === 'moderator') setActiveSection('moderator-portal');
+              else if (role === 'tutor') setActiveSection('tutor-portal');
+              else if (role === 'student') setActiveSection('student-portal');
+              else if (role === 'parent') setActiveSection('parent-portal');
+            }}
+          />
+        </React.Suspense>
         <FloatingChatWidget />
       </div>
     );
@@ -188,11 +216,13 @@ const MainAppContent: React.FC = () => {
           onOpenStatusTracker={() => setIsTrackerOpen(true)}
         />
         <main className="flex-1">
-          <ProprietressPage
-            onNavigate={handleNavigate}
-            onOpenAdmissions={() => setIsAdmissionsOpen(true)}
-            onOpenTuitionCalc={() => setIsTuitionCalcOpen(true)}
-          />
+          <React.Suspense fallback={<PortalLoadingSkeleton />}>
+            <ProprietressPage
+              onNavigate={handleNavigate}
+              onOpenAdmissions={() => setIsAdmissionsOpen(true)}
+              onOpenTuitionCalc={() => setIsTuitionCalcOpen(true)}
+            />
+          </React.Suspense>
         </main>
         <Footer 
           onNavigate={handleNavigate}
@@ -391,39 +421,50 @@ const MainAppContent: React.FC = () => {
         </button>
       </div>
 
-      {/* User Walkthrough Tour Modal */}
-      <UserTourModal 
-        isOpen={isTourOpen}
-        onClose={() => setIsTourOpen(false)}
-        onNavigate={handleNavigate}
-        onOpenAdmissions={() => setIsAdmissionsOpen(true)}
-        onOpenTuitionCalc={() => setIsTuitionCalcOpen(true)}
-      />
+      {/* Modals with Suspense & Conditional Loading */}
+      <React.Suspense fallback={null}>
+        {isTourOpen && (
+          <UserTourModal 
+            isOpen={isTourOpen}
+            onClose={() => setIsTourOpen(false)}
+            onNavigate={handleNavigate}
+            onOpenAdmissions={() => setIsAdmissionsOpen(true)}
+            onOpenTuitionCalc={() => setIsTuitionCalcOpen(true)}
+          />
+        )}
 
-      {/* Modals */}
-      <AdmissionsModal 
-        isOpen={isAdmissionsOpen} 
-        onClose={() => setIsAdmissionsOpen(false)} 
-      />
+        {isAdmissionsOpen && (
+          <AdmissionsModal 
+            isOpen={isAdmissionsOpen} 
+            onClose={() => setIsAdmissionsOpen(false)} 
+          />
+        )}
 
-      <TuitionCalculatorModal 
-        isOpen={isTuitionCalcOpen}
-        onClose={() => setIsTuitionCalcOpen(false)}
-        onProceedToApply={() => {
-          setIsTuitionCalcOpen(false);
-          setIsAdmissionsOpen(true);
-        }}
-      />
+        {isTuitionCalcOpen && (
+          <TuitionCalculatorModal 
+            isOpen={isTuitionCalcOpen}
+            onClose={() => setIsTuitionCalcOpen(false)}
+            onProceedToApply={() => {
+              setIsTuitionCalcOpen(false);
+              setIsAdmissionsOpen(true);
+            }}
+          />
+        )}
 
-      <ApplicationTrackerModal 
-        isOpen={isTrackerOpen}
-        onClose={() => setIsTrackerOpen(false)}
-      />
+        {isTrackerOpen && (
+          <ApplicationTrackerModal 
+            isOpen={isTrackerOpen}
+            onClose={() => setIsTrackerOpen(false)}
+          />
+        )}
 
-      <CareerAdvisorModal 
-        isOpen={isCareerAdvisorOpen}
-        onClose={() => setIsCareerAdvisorOpen(false)}
-      />
+        {isCareerAdvisorOpen && (
+          <CareerAdvisorModal 
+            isOpen={isCareerAdvisorOpen}
+            onClose={() => setIsCareerAdvisorOpen(false)}
+          />
+        )}
+      </React.Suspense>
     </div>
   );
 };
