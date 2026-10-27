@@ -28,13 +28,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
   private handleReset = () => {
     try {
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('stanbax_')) {
-          localStorage.removeItem(key);
-        }
-      });
+      localStorage.clear();
+      sessionStorage.clear();
     } catch {}
-    window.location.reload();
+    window.location.href = window.location.pathname;
   };
 
   private handleReload = () => {
