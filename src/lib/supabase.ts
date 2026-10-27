@@ -558,7 +558,15 @@ const flushWrites = async () => {
   pendingWrites.clear();
   const upserts = batch
     .filter(([, v]) => v !== null)
-    .map(([key, v]) => ({ key, data: JSON.parse(v as string) }));
+    .map(([key, v]) => {
+      let data: any = v;
+      try {
+        data = JSON.parse(v as string);
+      } catch {
+        data = v;
+      }
+      return { key, data };
+    });
   const deletes = batch.filter(([, v]) => v === null).map(([k]) => k);
 
   // Mirror visitor chat, rep config, and school chat directory into public state keys
@@ -620,16 +628,26 @@ let patchInstalled = false;
 export const installLocalStorageSync = (): void => {
   if (patchInstalled || typeof localStorage === 'undefined') return;
   patchInstalled = true;
-  const origSet = localStorage.setItem.bind(localStorage);
-  const origRemove = localStorage.removeItem.bind(localStorage);
-  localStorage.setItem = (key: string, value: string) => {
-    origSet(key, value);
-    if (key.startsWith('stanbax_')) queueRemoteWrite(key, value);
-  };
-  localStorage.removeItem = (key: string) => {
-    origRemove(key);
-    if (key.startsWith('stanbax_')) queueRemoteWrite(key, null);
-  };
+  try {
+    const origSet = localStorage.setItem ? localStorage.setItem.bind(localStorage) : null;
+    const origRemove = localStorage.removeItem ? localStorage.removeItem.bind(localStorage) : null;
+    if (!origSet || !origRemove) return;
+
+    try {
+      localStorage.setItem = (key: string, value: string) => {
+        try { origSet(key, value); } catch {}
+        if (key.startsWith('stanbax_')) queueRemoteWrite(key, value);
+      };
+      localStorage.removeItem = (key: string) => {
+        try { origRemove(key); } catch {}
+        if (key.startsWith('stanbax_')) queueRemoteWrite(key, null);
+      };
+    } catch {
+      // In Safari strict mode or private mode, direct assignment to localStorage.setItem can be blocked
+    }
+  } catch (err) {
+    console.warn('[Storage] installLocalStorageSync unavailable in current browser:', err);
+  }
 };
 
 // ---------------------------------------------------------------------------
